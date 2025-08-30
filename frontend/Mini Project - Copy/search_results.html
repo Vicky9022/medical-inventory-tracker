@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Medical Inventory - Search Results</title>
+    <link rel="stylesheet" href="css/search_result.css">
+</head>
+<body>
+    <h1>Search Results</h1>
+
+    <h2>Available at Nearby Medical Stores:</h2>
+    <ul id="medicalStoresList">
+        <!-- Medical store results will be dynamically added here -->
+    </ul>
+
+    <script async >
+        // Function to get the query parameter from the URL
+        function getQueryParameter(name) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(name);
+        }
+
+        // Get the medicine name from the query parameter
+        const medicineName = getQueryParameter("medicine");
+
+        // Get a reference to the ul element where the medical stores will be added
+        const medicalStoresList = document.getElementById("medicalStoresList");
+
+        // Example search results based on medicine name
+        
+        const fetch_medicine = async () => {
+            
+            let response = await fetch(`http://localhost:4000/medicine?name=${medicineName}`);
+            
+            let respData = await response.json()
+            
+            return respData;
+        }
+
+        async function name() {
+            try {
+                let d = await fetch_medicine();
+                
+                Array.from(d).forEach((result) => {
+                    
+                    const listItem = document.createElement("li");
+                    listItem.innerHTML = `
+                        <strong>${result.medicine_name}</strong>
+                        <p>Price: &#8377; ${result.price}</p>
+                        <p>Store Name: ${result.store.store_name}</p>
+                        <p>Address: ${result.store.location}</p>
+                        <a target="_blank" href="https://www.google.com/maps?q=${result.store.location}">View on Google Maps</a>
+                    `;
+                    medicalStoresList.appendChild(listItem);
+                });
+            } catch (error) {
+                console.log(error)
+            }
+        }
+        
+        name();
+      
+    </script>
+</body>
+</html>

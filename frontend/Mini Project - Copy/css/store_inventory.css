@@ -1,0 +1,190 @@
+/* Reset styles for margin and padding */
+body, h1, p, form {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(to bottom right, #d9e7ff, #a1c4ff); /* Gradient background */
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    height: 100vh;
+    flex-direction: column;
+    align-items: center;
+    /* justify-content: center; */
+}
+
+h1 {
+    color: #24557c;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+h2 {
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+li {
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 20px;
+    margin: 10px;
+    width: fit-content;
+    transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+li:hover {
+    transform: translateY(-3px);
+    border-color: #24557c;
+    box-shadow: 2px 4px 6px rgba(0, 0, 0, 0.7);
+}
+
+strong {
+    color: #24557c;
+    font-size: 20px;
+    display: block;
+    margin-bottom: 10px;
+}
+
+p {
+    color: #555;
+    margin-bottom: 10px;
+}
+
+a {
+    color: #24557c;
+    text-decoration: none;
+    display: block;
+    transition: color 0.3s ease;
+}
+
+a:hover {
+    color: #1a4366;
+}
+
+/* Additional styles for existing content */
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 300px;
+    margin: 0 auto;
+}
+
+label {
+    margin-bottom: 10px;
+    font-size: 18px;
+    color: #24557c;
+}
+
+input[type="text"],
+input[type="date"] {
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 250px;
+    margin-bottom: 20px;
+    transition: border-color 0.3s ease;
+}
+
+input[type="text"]:focus,
+input[type="date"]:focus {
+    border-color: #24557c;
+}
+
+button {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #24557c;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #1a4366;
+}
+
+#confirmationMessage {
+    background-color: #4CAF50;
+    color: white;
+    text-align: center;
+    padding: 10px;
+    margin-top: 20px;
+    border-radius: 5px;
+    display: none;
+}
+
+.available-medicines {
+    margin-top: 30px;
+}
+
+.available-medicines h2 {
+    color: #24557c;
+}
+
+.available-medicines p {
+    font-size: 1.2em;
+    color: #1a4366;
+    margin-bottom: 5px;
+    transition: color 0.3s ease;
+}
+
+.available-medicines p:hover {
+    color: #4CAF50;
+}
+
+.redirect-card {
+    text-decoration: none;
+    color: inherit;
+}
+
+.store-info {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    margin-bottom: 20px;
+    background-color: #fff; /* Background color for the clickable card */
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Add a subtle shadow for a card effect */
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.store-info:hover {
+    transform: scale(1.05);
+    background-color: #eceef0;
+    border-color: #4285F4;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.521);
+
+}
+
+
+.store-info p{
+    padding-right: 10px;
+}
+
+
+#errorDiv{
+    margin-top: 50px;
+    font-size: 20px;
+    color: red;
+}

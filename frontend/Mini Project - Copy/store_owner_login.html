@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Store Owner Login</title>
+    <link rel="stylesheet" href="css/store_inventory.css">
+</head>
+<body>
+    <h1>Store Owner Information</h1>
+    <form id="storeOwnerForm">
+        <label for="licenseNumber">License:</label>
+        <input type="text" id="licenseNumber" name="licenseNumber" required>
+
+        <label for="storeName">Store Name:</label>
+        <input type="text" id="storeName" name="storeName" required>
+        
+        <label for="storeOwnerName">Store Owner Name:</label>
+        <input type="text" id="storeOwnerName" name="storeOwnerName" >
+        
+        
+        <button type="submit" value="Submit">Submit</button>
+    </form>
+
+
+    <div id="errorDiv">
+
+    </div>
+
+    <script>
+        document.getElementById('storeOwnerForm').addEventListener('submit', function (event) {
+            event.preventDefault(); // Prevents the default form submission
+
+            // Get form data
+            const formData = new FormData(event.target);
+            
+            const storeId = event.target.licenseNumber.value
+            const storeName = event.target.storeName.value
+            const storeOwnerName = event.target.storeOwnerName.value === "" ? null : event.target.storeOwnerName.value
+
+            console.log(storeOwnerName)
+
+            // Make a POST request to the backend
+            fetch('http://localhost:4000/store/verify', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (response.status !== 200) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Handle the successful response from the backend
+                console.log(data);
+                
+                const address = data.location
+                window.location.href = `store_inventory.html?store_id=${storeId}&store_name=${storeName}&store_owner_name=${storeOwnerName}&address=${address}`;
+                // You can do something with the data if needed
+            })
+            .catch(error => {
+                // Handle errors, including 404 Not Found
+                console.error('Error:', error);
+                document.getElementById('errorDiv').textContent = 'Please enter valid credentials';
+            });
+        });
+    </script>
+</body>
+</html>

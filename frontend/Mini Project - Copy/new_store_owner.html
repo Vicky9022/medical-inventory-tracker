@@ -1,0 +1,72 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Medical Inventory - Store Owner</title>
+    <link rel="stylesheet" href="css/store_owner.css">
+    
+</head>
+<body>
+    <h1>Store Owner Information</h1>
+    <form id="newStoreOwnerForm" action="store_inventory.html">
+
+        <label for="storeName">Store Name:</label>
+        <input type="text" id="storeName" name="storeName">
+
+        <label for="address">Store Address:</label>
+        <input type="text" id="address" name="address">
+
+        <label for="storeOwnerName">Store Owner Name:</label>
+        <input type="text" id="storeOwnerName" name="storeOwnerName">
+
+
+
+        <button type="submit">Register</button>
+    </form>
+
+    <div id="errorDiv">
+
+    </div>
+
+    <script>
+        document.getElementById('newStoreOwnerForm').addEventListener('submit', function (event) {
+            event.preventDefault(); // Prevents the default form submission
+
+            // Get form data
+            const formData = new FormData(event.target);
+            // console.log(formData)
+            
+            const location = event.target.address.value
+            const storeName = event.target.storeName.value
+            const storeOwnerName = event.target.storeOwnerName.value
+
+            // Make a POST request to the backend
+            fetch('http://localhost:4000/store/signup', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (response.status !== 200) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Handle the successful response from the backend
+                console.log(data);
+                const storeID = data.store_id;
+                console.log(storeID)
+                window.location.href = `store_inventory.html?store_id=${storeID}&store_name=${storeName}&store_owner_name=${storeOwnerName}&address=${location}`;
+                // You can do something with the data if needed
+            })
+            .catch(error => {
+                // Handle errors, including 404 Not Found
+                console.error('Error:', error);
+                document.getElementById('errorDiv').textContent = 'This store is already registered';
+            });
+        });
+    </script>
+
+</body>
+</html>

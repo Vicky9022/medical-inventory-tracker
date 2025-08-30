@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Medical Inventory - Store Inventory Input</title>
+    <link rel="stylesheet" href="css/store_inventory.css">
+    <script>
+        function validateExpiryDate() {
+            var expiryDateInput = document.getElementById("expiryDate");
+            var today = new Date().toISOString().split('T')[0]; // Get today's date in the "yyyy-mm-dd" format
+
+            if (expiryDateInput.value < today) {
+                alert("Please select an expiry date from today onwards.");
+                expiryDateInput.value = today; // Reset to today's date
+                return false;
+            }
+
+            return true;
+        }
+
+        function validatePriceAndQuantity() {
+            var priceInput = document.getElementById("price");
+            var quantityInput = document.getElementById("quantity");
+
+            if (!/^\d+$/.test(priceInput.value)) {
+                alert("Please enter only numeric values for price.");
+                priceInput.value = ""; // Clear the input
+                return false;
+            }
+
+            if (!/^\d+$/.test(quantityInput.value)) {
+                alert("Please enter only numeric values for quantity.");
+                quantityInput.value = ""; // Clear the input
+                return false;
+            }
+
+            return true;
+        }
+
+    
+        function getQueryVariable(variable) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(variable);
+        }
+
+        window.onload = function () {
+            var licenseNumber = getQueryVariable("store_id");
+            var storeName = getQueryVariable("store_name");
+            var storeAddress = getQueryVariable("address");
+            var storeOwnerName = getQueryVariable("store_owner_name");
+
+            document.getElementById("licenseNumberDisplay").innerText = "License Number: " + licenseNumber;
+            document.getElementById("storeNameDisplay").innerText = "Store Name: " + storeName;
+            document.getElementById("storeOwnerNameDisplay").innerText = "Store Owner Name: " + storeOwnerName;
+            document.getElementById("storeAddressDisplay").innerText = "Store Address: " + storeAddress;
+
+            // Example: Display medicines (replace this with your actual data retrieval and display logic)
+            displayMedicines(licenseNumber);
+        };
+
+        function displayMedicines(storeid) {
+            
+            fetch(`http://localhost:4000/store/medicine?store_id=${storeid}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Handle the successful response from the backend
+                // console.log(data[0].medicines)
+                let medicines = data[0].medicines
+                // Display the data in the 'dataDisplay' div
+                var medicinesList = document.getElementById("medicinesList");
+
+                medicines.forEach(function (medicine) {
+                    var listItem = document.createElement("li");
+                    listItem.innerHTML =
+                        "<strong>" + medicine.medicine_name + "</strong><br>" +
+                        "Manufacturer: " + medicine.manufacturer + "<br>" +
+                        "Price: &#8377; " + medicine.price + "<br>" +
+                        "Quantity: " + medicine.quantity + "<br>" +
+                        "Expiry Date: " + new Date(medicine.expires_at).toDateString();
+
+                    medicinesList.appendChild(listItem);
+                });
+            })
+            .catch(error => {
+                // Handle errors
+                console.error('Error:', error);
+                document.getElementById('errorDiv').textContent = 'Error fetching data. Please try again.';
+            });
+
+            // Display medicines in a list or any other suitable format
+            
+        }
+
+
+        
+
+    </script>
+</head>
+<body>
+    <div class="store-info">
+        <p id="licenseNumberDisplay"></p>
+        <p id="storeNameDisplay"></p>
+        <p id="storeOwnerNameDisplay"></p>
+        <p id="storeAddressDisplay"></p>
+    </div>
+
+    <h1>Store Inventory Input</h1>
+    <!-- <form id="inventoryForm" onsubmit="return validateExpiryDate() && validatePriceAndQuantity() && addNewStock()"> -->
+    <form id="inventoryForm">
+        <label for="medicine_name">Medicine Name:</label>
+        <input type="text" id="medicineName" name="medicine_name" required>
+
+        <label for="manufacturer">Manufacturer:</label>
+        <input type="text" id="manufacturer" name="manufacturer" required>
+
+        <label for="price">Price:</label>
+        <input type="text" id="price" name="price" required>
+
+        <label for="quantity">Quantity:</label>
+        <input type="text" id="quantity" name="quantity" required>
+
+        <label for="expires_at">Expiry Date:</label>
+        <input type="date" id="expiryDate" name="expires_at" required>
+
+        <button type="submit">Submit</button>
+    </form>
+
+    <div id="errorDiv">
+
+    </div>
+
+    <div id="confirmationMessage" style="display: none;">
+        <p>Your information will be added to our database after validation.</p>
+    </div>
+
+    <!-- Medicines Section -->
+    <h2>Medicines Available at the Store</h2>
+    <ul id="medicinesList"></ul>
+
+    <script>
+        document.getElementById('inventoryForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            
+            if (!(validateExpiryDate() && validatePriceAndQuantity())){
+                event.target.reset()
+                return
+            }
+            
+
+            const formData = new FormData(event.target);
+
+            const jsonData = {};
+            formData.forEach((value, key) => {
+
+                if (key === 'expires_at' ){
+                    jsonData['expires_at'] = value + " 00:00:00+05:30"
+                }
+                else{
+                    jsonData[key] = value;
+                }
+            });
+
+            jsonData['store_id'] = getQueryVariable('store_id')
+            
+            console.log(JSON.stringify(jsonData));
+
+            // Make a POST request to the backend
+            fetch('http://localhost:4000/medicine', {
+                method: 'POST',
+                body: JSON.stringify(jsonData),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+
+            .then(response => {
+                if (response.status !== 200) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Handle the successful response from the backend
+                // console.log(data);
+                displayMedicines(getQueryVariable('store_id'))
+                // You can do something with the data if needed
+            })
+            .catch(error => {
+                // Handle errors, including 404 Not Found
+                console.error('Error:', error);
+
+                document.getElementById('errorDiv').textContent = 'unknown error';
+            });
+            
+            event.target.reset()
+        })
+    </script>
+</body>
+</html>

@@ -1,0 +1,32 @@
+<!DOCTYPE html> 
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Medical Inventory - Customer Search</title>
+    <link rel="stylesheet" href="css/customer.css">
+</head>
+<body>
+    <h1>Search for Medicines</h1>
+    <form id="searchForm" action="search_results.html" method="get">
+        <label for="medicine">Enter Medicine Name:</label>
+        <input type="text" id="medicine" name="medicine">
+        <button id="btn" type="submit">
+            Submit
+        </button>
+    </form>
+
+    <script>
+        let searchForm = document.getElementById("searchForm");
+
+        searchForm.addEventListener("submit", (event) => {
+            event.preventDefault(); // Prevent the form from submitting normally
+
+            let inputElement = document.getElementById("medicine");
+            localStorage.setItem("medicine", inputElement.value);
+
+            // Redirect to the search_results.html with the value passed as a query parameter
+            window.location.href = "search_results.html?medicine=" + inputElement.value;
+        });
+    </script>
+</body>
+</html>
